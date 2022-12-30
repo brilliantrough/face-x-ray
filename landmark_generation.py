@@ -1,3 +1,10 @@
+'''
+Author: pezayo
+Date: 2022-12-09 22:17:15
+LastEditors: pezayo
+LastEditTime: 2022-12-30 01:15:32
+Description: Description of the file
+'''
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -10,7 +17,8 @@ import shutil
 from tqdm import tqdm
 # used for accessing url to download files
 import urllib.request as urlreq
-import glob, os
+import glob
+import os
 
 # Load the detector
 detector = dlib.get_frontal_face_detector()
@@ -18,21 +26,22 @@ detector = dlib.get_frontal_face_detector()
 # Load the predictor
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
+
 def generate_landmarks(img_dir, skip=1, valid=False):
     filenames = []
-    #if valid:
+    # if valid:
     #    img_dir = img_dir + 'val/real/'
-    #else:
+    # else:
     #    img_dir = img_dir + 'train/real/'
     for root, dirs, files in os.walk(img_dir):
-            for file in files:
-                if file.endswith(".jpg") or file.endswith(".png"):
-                    filenames.append(os.path.join(root, file))
+        for file in files:
+            if file.endswith(".jpg") or file.endswith(".png"):
+                filenames.append(os.path.join(root, file))
     landmark_coords = {}
     count = 0
 
     for i in tqdm(range(len(filenames))):
-        if i%skip == 0:
+        if i % skip == 0:
             image_file = filenames[i]
             image = cv2.imread(image_file)
             image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -65,6 +74,8 @@ def generate_landmarks(img_dir, skip=1, valid=False):
     with open(save_name, 'w') as fp:
         json.dump(landmark_coords, fp)
 
-generate_landmarks(img_dir='dataset/data_train_2020-11-24_09-59-48/', skip=200)
-generate_landmarks(img_dir='dataset/images1024x1024/', skip=1)
-#generate_landmarks(valid=True)
+
+generate_landmarks('../Facedata2/AFLW', skip=1, valid=False)
+# generate_landmarks(img_dir='dataset/data_train_2020-11-24_09-59-48/', skip=200)
+# generate_landmarks(img_dir='dataset/images1024x1024/', skip=1)
+# generate_landmarks(valid=True)
